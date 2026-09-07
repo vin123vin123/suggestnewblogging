@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Account</title>
-    <style>body { font-family: sans-serif; margin: 50px; }</style>
+    <meta charset="UTF-8"><title>Register</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-    <h2>Register a New Account</h2>
-    <% if (error) { %> <p style="color: red;"><%= error %></p> <% } %>
-    <form action="/register" method="POST">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
-        
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
-        
-        <button type="submit">Sign Up</button>
-    </form>
-    <p>Already have an account? <a href="/login">Login here</a>.</p>
+<body style="display:flex; align-items:center; min-height:100vh;">
+    <div class="container" style="max-width:400px;">
+        <div class="card">
+            <h2>Create Account</h2>
+            <% if (error) { %> <div class="error-msg"><%= error %></div> <% } %>
+            <form action="/register" method="POST">
+                <label>Username</label><input type="text" name="username" required>
+                <label>Password</label><input type="password" name="password" required>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Sign Up</button>
+            </form>
+            <p style="text-align:center; margin-top:15px;">Have an account? <a href="/login">Login</a></p>
+        </div>
+    </div>
 </body>
 </html>
