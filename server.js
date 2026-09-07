@@ -66,7 +66,7 @@ app.post('/register', async (req, res) => {
     await newUser.save();
     res.redirect('/login');
   } catch (err) {
-    res.render('register', { error: 'Error signing up.' });
+    res.render('register', { error: 'Error signing up.' + err.message});
   }
 });
 
