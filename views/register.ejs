@@ -9,7 +9,7 @@
         <div class="card">
             <h2>Create Account</h2>
             <% if (error) { %> <div class="error-msg"><%= error %></div> <% } %>
-            <form action="/register" method="POST">
+            <form action="./register" method="POST">
                 <label>Username</label><input type="text" name="username" required>
                 <label>Password</label><input type="password" name="password" required>
                 <button type="submit" class="btn btn-primary" style="width:100%;">Sign Up</button>
