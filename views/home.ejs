@@ -1,14 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Home Dashboard</title>
-    <style>body { font-family: sans-serif; margin: 50px; }</style>
+    <meta charset="UTF-8"><title>Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <h1>Welcome to your Dashboard, <%= username %>!</h1>
-    <p>You have successfully logged in using your secure cookie session.</p>
-    <hr>
-    <a href="/logout"><button>Log Out</button></a>
+    <nav class="navbar">
+        <h2>Blog Engine Dashboard</h2>
+        <div>
+            <span style="margin-right:15px;">Active: <strong><%= username %></strong></span>
+            <a href="/logout" class="btn btn-secondary">Log Out</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Composition Form -->
+        <div class="card">
+            <h3>Compose New Post</h3>
+            <form action="/posts/new" method="POST">
+                <input type="text" name="title" placeholder="Catchy Post Title..." required>
+                <textarea name="content" placeholder="Share your story..." required></textarea>
+                <button type="submit" class="btn btn-primary">Publish Entry</button>
+            </form>
+        </div>
+
+        <h3>Your Published Timeline</h3>
+        <% if(posts.length === 0) { %> <p>No records found. Write your first blog above!</p> <% } %>
+        
+        <% posts.forEach(post => { %>
+            <div class="card">
+                <h2><%= post.title %></h2>
+                <span style="font-size:0.85em; color:#6c757d;">Posted on <%= post.createdAt.toDateString() %></span>
+                <p style="line-height:1.6; margin-top:15px;"><%= post.content %></p>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <a href="/posts/edit/<%= post._id %>" class="btn btn-warning">Modify</a>
+                    <form action="/posts/delete/<%= post._id %>" method="POST" onsubmit="return confirm('Permanently remove post?');">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        <% }) %>
+    </div>
 </body>
 </html>
