@@ -15,9 +15,18 @@ mongoose.connect(process.env.MONGO_URI)
 
 // --- DATA SCHEMAS & MODELS ---
 const UserSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
-});
+  username: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    trim: true // Removes accidental empty spaces at the beginning or end
+  },
+  password: { 
+    type: String, 
+    required: true 
+  }
+}, { collection: 'users' }); // Forces an exact clean collection name
+
 const User = mongoose.model('User', UserSchema);
 
 const PostSchema = new mongoose.Schema({
