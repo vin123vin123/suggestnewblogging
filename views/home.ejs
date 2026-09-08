@@ -45,25 +45,31 @@
         <% } %>
         
         <!-- Live loop rendering every item inside the Database collection array -->
-        <% posts.forEach(post => { %>
-            <div class="card">
-                <h2 style="margin: 0 0 5px 0;"><%= post.title %></h2>
-                <div class="meta">
-                    Written by <strong>@<%= post.author %></strong> on <%= post.createdAt.toDateString() %>
-                </div>
-                <p style="line-height:1.6; white-space: pre-wrap;"><%= post.content %></p>
-                
-                <!-- Checks if the logged-in account ID matches the author of the post -->
-                <% if (currentUserId.toString() === post.authorId.toString()) { %>
-                    <div style="margin-top:20px;">
-                        <form action="/posts/delete/<%= post._id %>" method="POST" onsubmit="return confirm('Permanently remove your post?');">
-                            <button type="submit" class="btn btn-danger">Delete My Post</button>
-                        </form>
-                    </div>
-                <% } %>
+<!-- Live loop rendering every item inside the Database collection array -->
+<% posts.forEach(post => { %>
+    <div class="card">
+        <h2 style="margin: 0 0 5px 0;"><%= post.title %></h2>
+        <div class="meta">
+            <!-- 🛡️ Safe check: Uses 'Anonymous' if old posts are missing author fields -->
+            Written by <strong>@<%= post.author || 'Anonymous' %></strong> on <%= post.createdAt ? post.createdAt.toDateString() : 'Unknown Date' %>
+        </div>
+        <p style="line-height:1.6; white-space: pre-wrap;"><%= post.content %></p>
+        
+        <!-- 🔒 SAFE ACCESS CHECK: Checks if post.authorId exists BEFORE calling .toString() to prevent 500 crashes -->
+        <% if (typeof currentUserId !== 'undefined' && currentUserId && post.authorId && currentUserId.toString() === post.authorId.toString()) { %>
+            <div style="margin-top:20px;">
+                <form action="/posts/delete/<%= post._id %>" method="POST" onsubmit="return confirm('Permanently remove your post?');">
+                    <button type="submit" class="btn btn-danger">Delete My Post</button>
+                </form>
             </div>
-        <% }) %>
+        <% } %>
     </div>
+<% }) %>
+
+        
+            
+        
+ </div>
 
 </body>
 </html>
