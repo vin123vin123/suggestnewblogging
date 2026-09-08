@@ -71,27 +71,61 @@ app.post('/register', async (req, res) => {
 });
 
 app.get('/login', (req, res) => res.render('login', { error: null }));
+// --- UPDATED LOGIN ACTION (POST) ---
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   try {
+    if (!username || !password) {
+      return res.render('login', { error: 'Please enter both username and password.' });
+    }
+
     const user = await User.findOne({ username: username.trim() });
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.render('login', { error: 'Invalid username or password.' });
     }
+
+    // 🔒 Establish session variables explicitly
     req.session.userId = user._id;
     req.session.username = user.username;
-    res.redirect('/home');
+
+    // Force save session to store cookies before redirecting
+    req.session.save((err) => {
+      if (err) {
+        console.error("Session Save Error:", err);
+        return res.render('login', { error: 'Session allocation error.' });
+      }
+      res.redirect('/home');
+    });
+
   } catch (err) {
+    console.error("Login Route Exception:", err);
     res.render('login', { error: 'Login problem encountered.' });
   }
 });
 
-app.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.clearCookie('connect.sid');
-    res.redirect('/login');
-  });
+// --- UPDATED HOME TIMELINE (GET) ---
+app.get('/home', requireLogin, async (req, res) => {
+  try {
+    // Safely pull variables from current active session data
+    const activeUsername = req.session.username || 'User';
+    const activeUserId = req.session.userId;
+
+    // Fetch posts cleanly, newest first
+    const allPosts = await Post.find({}).sort({ createdAt: -1 });
+
+    res.render('home', { 
+      username: activeUsername, 
+      currentUserId: activeUserId, 
+      posts: allPosts 
+    });
+  } catch (err) {
+    console.error("Home Timeline Render Exception:", err);
+    res.status(500).send("Error fetching timeline stream.");
+  }
 });
+
+
+    
 
 // --- GLOBAL BLOG POST ROUTES ---
 
