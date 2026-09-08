@@ -65,7 +65,7 @@ app.get('/', (req, res) => res.redirect('/home'));
 
 app.get('/register', (req, res) => res.render('register', { error: null }));
 app.post('/register', async (req, res) => {
-  const { 'username', 'password' } = req.body;
+  const { username, password } = req.body;
   try {
     const existingUser = await User.findOne({ username });
     if (existingUser) return res.render('register', { error: 'Username already taken.' });
