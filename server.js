@@ -16,13 +16,13 @@ mongoose.connect(process.env.MONGO_URI)
 // --- DATA SCHEMAS & MODELS ---
 const UserSchema = new mongoose.Schema({
   username: { 
-    type: 'String', 
+    type: String, 
     required: true, 
     unique: true,
     trim: true // Removes accidental empty spaces at the beginning or end
   },
   password: { 
-    type: 'String', 
+    type: String, 
     required: true 
   }
 }, { collection: 'users' }); // Forces an exact clean collection name
@@ -65,7 +65,7 @@ app.get('/', (req, res) => res.redirect('/home'));
 
 app.get('/register', (req, res) => res.render('register', { error: null }));
 app.post('/register', async (req, res) => {
-  const { username, password } = req.body;
+  const { 'username', 'password' } = req.body;
   try {
     const existingUser = await User.findOne({ username });
     if (existingUser) return res.render('register', { error: 'Username already taken.' });
